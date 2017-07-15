@@ -31,6 +31,10 @@ div.line-chart .chart-title, div.line-chart .chart-description {
     padding: 5px 0;
 }
 
+div.line-chart text {
+    font-size: 12px;
+}
+
 div.line-chart path.line {
     fill: none;
     stroke-width: 4px;
@@ -48,6 +52,7 @@ div.line-chart .axis line {
 }
 
 div.line-chart .axis path {
+    fill: none;
     stroke: #556f7b;
     stroke-width: 1;
 }

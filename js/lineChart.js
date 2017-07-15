@@ -13,7 +13,7 @@ class LineChart {
             left: 35,
             top: 25,
             right: 35,
-            bottom: 20
+            bottom: 25
         };
 
         this._defaults = {
@@ -195,13 +195,15 @@ class LineChart {
 
         this._xAxisContainer
             .attr('transform', 'translate(' + [0, this._getInnerHeight()] + ')')
-            .call(d3.axisBottom(this._getXScale())
+            .call(d3.svg.axis().scale(this._getXScale()).orient('bottom')
                 .tickSize(- this._getInnerHeight())
+                .tickPadding(8)
             );
 
         this._yAxisContainer
-            .call(d3.axisLeft(this._getYScale())
+            .call(d3.svg.axis().scale(this._getYScale()).orient('left')
                 .tickSize(- this._getInnerWidth())
+                .tickPadding(8)
             );
 
         this._originalXScale = this._getXScale().copy();
@@ -229,7 +231,7 @@ class LineChart {
         var xScale = this._getXScale();
         var yScale = this._getYScale();
 
-        return d3.line()
+        return d3.svg.line()
             .x(function(d) {
                 return xScale(d.date);
             }).y(function(d) {
@@ -240,7 +242,7 @@ class LineChart {
 
     _getXScale() {
 
-        return d3.scaleTime()
+        return d3.time.scale()
             .range([0, this._getInnerWidth()])
             .domain(d3.extent(this._data, d => d.date));
     }
@@ -248,7 +250,7 @@ class LineChart {
 
     _getYScale() {
 
-        return d3.scaleLinear()
+        return d3.scale.linear()
             .range([this._getInnerHeight(), 0])
             .domain(this._getYDomain());
     }
