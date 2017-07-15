@@ -1,0 +1,53 @@
+div.line-chart {
+    display: block;
+    border: 1px solid #dbe0e4;
+}
+
+div.line-chart .chart-header {
+    background-color: #f3f5f6;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    position: relative;
+    border-bottom: 1px solid #dbe0e4;
+}
+
+div.line-chart .chart-container {
+    margin-bottom: 20px;
+}
+
+div.line-chart button {
+    background-color: #90a4ae;
+    border-width: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 30px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+div.line-chart .chart-title, div.line-chart .chart-description {
+    padding: 5px 0;
+}
+
+div.line-chart path.line {
+    fill: none;
+    stroke-width: 4px;
+}
+
+div.line-chart line.border {
+    stroke: #0277bd;
+    stroke-width: 2px;
+    stroke-dasharray: 20px 20px;
+}
+
+div.line-chart .axis line {
+    stroke: #556f7b;
+    stroke-opacity: 0.7;
+}
+
+div.line-chart .axis path {
+    stroke: #556f7b;
+    stroke-width: 1;
+}
