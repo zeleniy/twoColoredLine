@@ -4,9 +4,9 @@ class LineChart {
     constructor(config) {
 
         this._config = config;
-        this._data = config.data;
-        this._extent = config.extent;
-        this._comments = config.comments;
+        this._data = this._config.data;
+        this._extent = this._config.extent;
+        this._comments = this._config.comments;
         this._id = this._getUniqueId();
 
         this._margin = {
@@ -43,8 +43,20 @@ class LineChart {
         this._path1.datum(this._data);
         this._clipPath.datum(this._extent);
         this._path2.datum(this._data);
-        this._images.data(this._comments);
 
+        this._canvas
+            .selectAll('image')
+            .remove();
+
+        this._images = this._canvas
+            .selectAll('image')
+            .data(this._comments)
+            .enter()
+            .append('image')
+            .attr('class', 'comment')
+            .attr('xlink:href', 'img/comment.svg')
+            .attr('width', 32)
+            .attr('height', 32);
 
         this.resize();
     }
@@ -62,7 +74,7 @@ class LineChart {
             .attr('class', 'chart-header');
 
         var button = header.append('button')
-            .text('button')
+            .text('update')
             .on('click', this._config.clickHandler);
 
         header.append('div')
@@ -200,13 +212,13 @@ class LineChart {
         this._path2
             .attr('d', this._getLineGenerator());
 
-        this._images
+        var x = this._canvas
+            .selectAll('image')
             .attr('x', function(d) {
                 return xScale(d.date) - 5;
             }).attr('y', function(d) {
                 return yScale(d.value) - 36;
-            })
-
+            });
 
         return this;
     }
