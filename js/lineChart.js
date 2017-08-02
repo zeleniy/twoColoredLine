@@ -6,8 +6,8 @@ class LineChart {
         this._config = config;
         this._data = this._config.data;
         this._extent = this._config.extent;
-        this._comments = this._config.comments;
         this._id = this._getUniqueId();
+        this._duration = 1000;
 
         this._margin = {
             left: 35,
@@ -32,11 +32,10 @@ class LineChart {
     }
 
 
-    update(data, extent, comments) {
+    update(data, extent) {
 
         this._data = data;
         this._extent = extent;
-        this._comments = comments;
 
         this._rect.datum(this._extent);
         this._borders.data(this._extent);
@@ -44,21 +43,7 @@ class LineChart {
         this._clipPath.datum(this._extent);
         this._path2.datum(this._data);
 
-        this._canvas
-            .selectAll('image')
-            .remove();
-
-        this._images = this._canvas
-            .selectAll('image')
-            .data(this._comments)
-            .enter()
-            .append('image')
-            .attr('class', 'comment')
-            .attr('xlink:href', 'img/comment.svg')
-            .attr('width', 32)
-            .attr('height', 32);
-
-        this.resize();
+        return this.resize();
     }
 
 
@@ -127,11 +112,17 @@ class LineChart {
             .append('g')
             .attr('class', 'axis y-axis');
 
+        var min = this._getYScale().domain()[0];
+        var data = JSON.parse(JSON.stringify(this._data)).map(function(d) {
+            d.value = min;
+            return d;
+        });
+
         this._path1 = this._canvas
             .append('path')
-            .attr('class', 'line')
-            .datum(this._data)
-            .style('stroke', '#880015');
+            .attr('class', 'line outer-line')
+            .datum(data)
+            .attr('d', this._getLineGenerator());
 
         this._clipPath = this._canvas
             .append('defs')
@@ -142,22 +133,12 @@ class LineChart {
 
         this._path2 = this._canvas
             .append('path')
-            .attr('class', 'line')
-            .datum(this._data)
-            .style('stroke', '#3f48cc')
-            .attr('clip-path', 'url(#clip)');
+            .attr('class', 'line inner-line')
+            .datum(data)
+            .attr('clip-path', 'url(#clip)')
+            .attr('d', this._getLineGenerator());
 
-        this._images = this._canvas
-            .selectAll('image')
-            .data(this._comments)
-            .enter()
-            .append('image')
-            .attr('class', 'comment')
-            .attr('xlink:href', 'img/comment.svg')
-            .attr('width', 32)
-            .attr('height', 32);
-
-        return this.resize();
+        return this.update(this._data, this._extent);
     }
 
 
@@ -176,18 +157,24 @@ class LineChart {
             .attr('transform', 'translate(' + [this._margin.left, this._margin.top] + ')');
 
         this._clipPath
+            .transition()
+            .duration(this._duration)
             .attr('x', 0)
             .attr('y', d => yScale(d[1]))
             .attr('width', this._getInnerWidth())
             .attr('height', d => yScale(d[0]) - yScale(d[1]));
 
         this._rect
+            .transition()
+            .duration(this._duration)
             .attr('x', 0)
             .attr('y', d => yScale(d[1]))
             .attr('width', this._getInnerWidth())
             .attr('height', d => yScale(d[0]) - yScale(d[1]));
 
         this._borders
+            .transition()
+            .duration(this._duration)
             .attr('x1', 0)
             .attr('y1', yScale)
             .attr('x2', this._getInnerWidth())
@@ -195,12 +182,16 @@ class LineChart {
 
         this._xAxisContainer
             .attr('transform', 'translate(' + [0, this._getInnerHeight()] + ')')
+            .transition()
+            .duration(this._duration)
             .call(d3.svg.axis().scale(this._getXScale()).orient('bottom')
                 .tickSize(- this._getInnerHeight())
                 .tickPadding(8)
             );
 
         this._yAxisContainer
+            .transition()
+            .duration(this._duration)
             .call(d3.svg.axis().scale(this._getYScale()).orient('left')
                 .tickSize(- this._getInnerWidth())
                 .tickPadding(8)
@@ -209,18 +200,14 @@ class LineChart {
         this._originalXScale = this._getXScale().copy();
 
         this._path1
+            .transition()
+            .duration(this._duration)
             .attr('d', this._getLineGenerator());
 
         this._path2
+            .transition()
+            .duration(this._duration)
             .attr('d', this._getLineGenerator());
-
-        var x = this._canvas
-            .selectAll('image')
-            .attr('x', function(d) {
-                return xScale(d.date) - 5;
-            }).attr('y', function(d) {
-                return yScale(d.value) - 36;
-            });
 
         return this;
     }

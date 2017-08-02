@@ -40,6 +40,14 @@ div.line-chart path.line {
     stroke-width: 4px;
 }
 
+div.line-chart path.outer-line {
+    stroke: red;
+}
+
+div.line-chart path.inner-line {
+    stroke: #4286f4;
+}
+
 div.line-chart line.border {
     stroke: #0277bd;
     stroke-width: 2px;
